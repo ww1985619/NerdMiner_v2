@@ -13,6 +13,8 @@
 
 #define WIDTH 240
 #define HEIGHT 135
+#define OFFSET_X 40
+#define OFFSET_Y 17
 
 OpenFontRender render;
 TFT_eSPI tft = TFT_eSPI();                  // Invoke library, pins defined in User_Setup.h
@@ -22,9 +24,11 @@ void tDisplay_Init(void)
 {
   pinMode(TFT_BL, OUTPUT);
   digitalWrite(TFT_BL, TFT_BACKLIGHT_ON);
+
   tft.init();
   tft.setRotation(ROTATION_90);
   tft.setSwapBytes(true);                 // Swap the colour byte order when rendering
+  tft.fillScreen(TFT_BLACK);
   background.createSprite(WIDTH, HEIGHT); // Background Sprite
   background.setSwapBytes(true);
   render.setDrawer(background);  // Link drawing object to background instance (so font will be rendered on background)
@@ -48,7 +52,7 @@ void tDisplay_AlternateScreenState(void)
 
 void tDisplay_AlternateRotation(void)
 {
-  tft.setRotation( flipRotation(tft.getRotation()) );
+  tft.setRotation(flipRotation(tft.getRotation()));
 }
 
 void tDisplay_MinerScreen(unsigned long mElapsed)
@@ -96,7 +100,7 @@ void tDisplay_MinerScreen(unsigned long mElapsed)
   render.rdrawString(data.currentTime.c_str(), 215, 1, TFT_BLACK);
 
   // Push prepared background to screen
-  background.pushSprite(0, 0);
+  background.pushSprite(OFFSET_X, OFFSET_Y);
 }
 
 void tDisplay_ClockScreen(unsigned long mElapsed)
@@ -134,7 +138,7 @@ void tDisplay_ClockScreen(unsigned long mElapsed)
   background.drawString(data.currentTime.c_str(), 70, 25, GFXFF);
 
   // Push prepared background to screen
-  background.pushSprite(0, 0);
+  background.pushSprite(OFFSET_X, OFFSET_Y);
 }
 
 void tDisplay_GlobalHashScreen(unsigned long mElapsed)
@@ -193,13 +197,13 @@ void tDisplay_GlobalHashScreen(unsigned long mElapsed)
   background.drawString(data.remainingBlocks.c_str(), 55, 125, FONT2);
 
   // Push prepared background to screen
-  background.pushSprite(0, 0);
+  background.pushSprite(OFFSET_X, OFFSET_Y);
 }
 
 void tDisplay_BTCprice(unsigned long mElapsed)
 {
   clock_data data = getClockData(mElapsed);
-  
+
   // Print background screen
   background.pushImage(0, 0, priceScreenWidth, priceScreenHeight, priceScreen);
 
@@ -223,7 +227,7 @@ void tDisplay_BTCprice(unsigned long mElapsed)
   background.setTextColor(TFT_BLACK);
   background.drawString(data.currentTime.c_str(), 148, 1, GFXFF);
 
-  // Print BTC Price 
+  // Print BTC Price
   background.setFreeFont(FF23);
   background.setTextDatum(TL_DATUM);
   background.setTextSize(1);
@@ -231,20 +235,21 @@ void tDisplay_BTCprice(unsigned long mElapsed)
   background.drawString(data.btcPrice.c_str(), 82, 50, GFXFF);
 
   // Push prepared background to screen
-  background.pushSprite(0, 0);
+  background.pushSprite(OFFSET_X, OFFSET_Y);
 }
 
 void tDisplay_LoadingScreen(void)
 {
   tft.fillScreen(TFT_BLACK);
-  tft.pushImage(0, 0, initWidth, initHeight, initScreen);
+  tft.pushImage(OFFSET_X, OFFSET_Y, initWidth, initHeight, initScreen);
   tft.setTextColor(TFT_BLACK);
-  tft.drawString(CURRENT_VERSION, 24, 147, FONT2);
+  tft.drawString(CURRENT_VERSION, 24 + OFFSET_X, 147 + OFFSET_Y, FONT2);
 }
 
 void tDisplay_SetupScreen(void)
 {
-  tft.pushImage(0, 0, setupModeWidth, setupModeHeight, setupModeScreen);
+  tft.fillScreen(TFT_BLACK);
+  tft.pushImage(OFFSET_X, OFFSET_Y, setupModeWidth, setupModeHeight, setupModeScreen);
 }
 
 void tDisplay_AnimateCurrentScreen(unsigned long frame)
