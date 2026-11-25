@@ -1,0 +1,28 @@
+name: Build 190664A Firmware
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio
+
+      - name: Build environment esp32-wroom-190664a
+        run: pio run -e esp32-wroom-190664a
+
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nerdminer-esp32-wroom-190664a
+          path: .pio/build/esp32-wroom-190664a/*.bin
