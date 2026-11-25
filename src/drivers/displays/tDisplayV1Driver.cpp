@@ -20,6 +20,8 @@ TFT_eSprite background = TFT_eSprite(&tft); // Invoke library sprite
 
 void tDisplay_Init(void)
 {
+  pinMode(TFT_BL, OUTPUT);
+  digitalWrite(TFT_BL, TFT_BACKLIGHT_ON);
   tft.init();
   tft.setRotation(ROTATION_90);
   tft.setSwapBytes(true);                 // Swap the colour byte order when rendering
